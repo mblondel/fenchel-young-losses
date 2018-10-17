@@ -13,7 +13,7 @@ https://arxiv.org/abs/1805.09717
 import torch
 
 
-class Conjugate(torch.autograd.Function):
+class ConjugateFunction(torch.autograd.Function):
 
     @staticmethod
     def forward(ctx, theta, grad, Omega):
@@ -30,7 +30,7 @@ class FYLoss(torch.nn.Module):
 
     def forward(self, theta, y_true):
         y_pred = self.predict(theta)
-        ret = Conjugate.apply(theta, y_pred, self.Omega)
+        ret = ConjugateFunction.apply(theta, y_pred, self.Omega)
         ret += self.Omega(y_true)
         ret -= torch.sum(y_true * theta, dim=1)
         return torch.sum(ret)
@@ -49,7 +49,7 @@ class ClassificationLoss(FYLoss):
 
     def forward(self, theta, y_true):
         y_pred = self.predict(theta)
-        ret = Conjugate.apply(theta, y_pred, self.Omega)
+        ret = ConjugateFunction.apply(theta, y_pred, self.Omega)
 
         if len(y_true.shape) == 2:
             # y_true contains label proportions
