@@ -36,7 +36,7 @@ losses = {
 }
 
 if len(sys.argv) == 1:
-    criterion = LogisticLoss()
+    criterion = SparsemaxLoss()
 elif sys.argv[1] in losses:
     criterion = losses[sys.argv[1]]
 else:

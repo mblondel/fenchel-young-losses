@@ -19,7 +19,7 @@ losses = {
 }
 
 if len(sys.argv) == 1:
-    loss = logistic_loss
+    loss = sparsemax_loss
 elif sys.argv[1] in losses:
     loss = losses[sys.argv[1]]
 else:
