@@ -10,13 +10,15 @@ Mathieu Blondel, André F. T. Martins, Vlad Niculae.
 https://arxiv.org/abs/1805.09717
 """
 
+
 import torch
 
 
 class ConjugateFunction(torch.autograd.Function):
 
     @staticmethod
-    def forward(ctx, theta, grad, Omega):
+    def forward(ctx, theta, grad_func, Omega):
+        grad = grad_func(theta)
         ctx.save_for_backward(grad)
         return torch.sum(theta * grad, dim=1) - Omega(grad)
 
@@ -30,9 +32,25 @@ class FYLoss(torch.nn.Module):
 
     def forward(self, theta, y_true):
         y_pred = self.predict(theta)
-        ret = ConjugateFunction.apply(theta, y_pred, self.Omega)
-        ret += self.Omega(y_true)
-        ret -= torch.sum(y_true * theta, dim=1)
+        ret = ConjugateFunction.apply(theta, self.predict, self.Omega)
+
+        if len(y_true.shape) == 2:
+            # y_true contains label proportions
+            ret += self.Omega(y_true)
+            ret -= torch.sum(y_true * theta, dim=1)
+
+        elif len(y_true.shape) == 1:
+            # y_true contains label integers (0, ..., n_classes-1)
+
+            if y_true.dtype != torch.long:
+                raise ValueError("y_true should contains long integers.")
+
+            all_rows = torch.arange(y_pred.shape[0])
+            ret -= theta[all_rows, y_true]
+
+        else:
+            raise ValueError("Invalid shape for y_true.")
+
         return torch.sum(ret)
 
 
@@ -45,27 +63,7 @@ class SquaredLoss(FYLoss):
         return theta
 
 
-class ClassificationLoss(FYLoss):
-
-    def forward(self, theta, y_true):
-        y_pred = self.predict(theta)
-        ret = ConjugateFunction.apply(theta, y_pred, self.Omega)
-
-        if len(y_true.shape) == 2:
-            # y_true contains label proportions
-            ret += self.Omega(y_true)
-            ret -= torch.sum(y_true * theta, dim=1)
-
-        elif len(y_true.shape) == 1:
-            # y_true contains label integers (0, ..., n_classes-1)
-            y_true = y_true.long()
-            all_rows = torch.arange(y_pred.shape[0])
-            ret -= theta[all_rows, y_true]
-
-        return torch.sum(ret)
-
-
-class PerceptronLoss(ClassificationLoss):
+class PerceptronLoss(FYLoss):
 
     def predict(self, theta):
         ret = torch.zeros_like(theta)
@@ -84,7 +82,7 @@ def Shannon_negentropy(p, dim):
     return torch.sum(tmp, dim)
 
 
-class LogisticLoss(ClassificationLoss):
+class LogisticLoss(FYLoss):
 
     def predict(self, theta):
         return torch.nn.Softmax(dim=1)(theta)
@@ -93,7 +91,7 @@ class LogisticLoss(ClassificationLoss):
         return Shannon_negentropy(p, dim=1)
 
 
-class Logistic_OVA_Loss(ClassificationLoss):
+class Logistic_OVA_Loss(FYLoss):
 
     def predict(self, theta):
         return torch.nn.Sigmoid()(theta)
@@ -161,10 +159,10 @@ class Sparsemax(torch.nn.Module):
 # end: From OpenNMT-py
 
 
-class SparsemaxLoss(ClassificationLoss):
+class SparsemaxLoss(FYLoss):
 
     def predict(self, theta):
         return Sparsemax(dim=1)(theta)
 
-    def Omega(self, mu):
-        return 0.5 * torch.sum((mu ** 2), dim=1) - 0.5
+    def Omega(self, p):
+        return 0.5 * torch.sum((p ** 2), dim=1) - 0.5
