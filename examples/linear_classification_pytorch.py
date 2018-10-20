@@ -1,7 +1,10 @@
 # Author: Mathieu Blondel
 # License: Simplified BSD
 
-import sys
+import os, sys
+currentdir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.dirname(currentdir))
+
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
