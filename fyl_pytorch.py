@@ -2,7 +2,7 @@
 # License: Simplified BSD
 
 """
-PyTorch Implementation of
+PyTorch implementation of
 
 Learning Classifiers with Fenchel-Young Losses:
     Generalized Entropies, Margins, and Algorithms.
@@ -17,8 +17,7 @@ import torch
 class ConjugateFunction(torch.autograd.Function):
 
     @staticmethod
-    def forward(ctx, theta, grad_func, Omega):
-        grad = grad_func(theta)
+    def forward(ctx, theta, grad, Omega):
         ctx.save_for_backward(grad)
         return torch.sum(theta * grad, dim=1) - Omega(grad)
 
@@ -31,8 +30,8 @@ class ConjugateFunction(torch.autograd.Function):
 class FYLoss(torch.nn.Module):
 
     def forward(self, theta, y_true):
-        y_pred = self.predict(theta)
-        ret = ConjugateFunction.apply(theta, self.predict, self.Omega)
+        self.y_pred = self.predict(theta)
+        ret = ConjugateFunction.apply(theta, self.y_pred, self.Omega)
 
         if len(y_true.shape) == 2:
             # y_true contains label proportions
@@ -45,7 +44,7 @@ class FYLoss(torch.nn.Module):
             if y_true.dtype != torch.long:
                 raise ValueError("y_true should contains long integers.")
 
-            all_rows = torch.arange(y_pred.shape[0])
+            all_rows = torch.arange(y_true.shape[0])
             ret -= theta[all_rows, y_true]
 
         else:

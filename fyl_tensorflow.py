@@ -2,7 +2,7 @@
 # License: Simplified BSD
 
 """
-Tensorflow Implementation of
+Tensorflow implementation of
 
 Learning Classifiers with Fenchel-Young Losses:
     Generalized Entropies, Margins, and Algorithms.
