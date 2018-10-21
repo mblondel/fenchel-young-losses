@@ -52,16 +52,16 @@ def fy_loss(y_true, theta, predict, Omega):
     return tf.reduce_sum(ret)
 
 
+def squared_predict(theta):
+    return theta
+
+
+def squared_Omega(mu):
+    return 0.5 * tf.reduce_sum(tf.square(mu), axis=1)
+
+
 def squared_loss(y_true, theta):
-
-    def Omega(mu):
-        return 0.5 * tf.reduce_sum(tf.square(mu), axis=1)
-
-
-    def predict(theta):
-        return theta
-
-    return fy_loss(y_true, theta, predict, Omega)
+    return fy_loss(y_true, theta, squared_predict, squared_Omega)
 
 
 def Shannon_negentropy(p, axis):
@@ -70,34 +70,35 @@ def Shannon_negentropy(p, axis):
     return tf.reduce_sum(tmp, axis)
 
 
+def logistic_predict(theta):
+    return tf.nn.softmax(theta, axis=1)
+
+def logistic_Omega(p):
+    return Shannon_negentropy(p, axis=1)
+
+
 def logistic_loss(y_true, theta):
+    return fy_loss(y_true, theta, logistic_predict, logistic_Omega)
 
-    def predict(theta):
-        return tf.nn.softmax(theta, axis=1)
 
-    def Omega(p):
-        return Shannon_negentropy(p, axis=1)
+def logistic_ova_predict(theta):
+    return tf.nn.sigmoid(theta)
 
-    return fy_loss(y_true, theta, predict, Omega)
+def logistic_ova_Omega(p):
+    return Shannon_negentropy(p, axis=1) + Shannon_negentropy(1-p, axis=1)
 
 
 def logistic_ova_loss(y_true, theta):
+    return fy_loss(y_true, theta, logistic_ova_predict, logistic_ova_Omega)
 
-    def predict(theta):
-        return tf.nn.sigmoid(theta)
 
-    def Omega(p):
-        return Shannon_negentropy(p, axis=1) + Shannon_negentropy(1-p, axis=1)
+def sparsemax_predict(theta):
+    return tf.contrib.sparsemax.sparsemax(theta)
 
-    return fy_loss(y_true, theta, predict, Omega)
+
+def sparsemax_Omega(p):
+    return 0.5 * tf.reduce_sum((p ** 2), axis=1) - 0.5
 
 
 def sparsemax_loss(y_true, theta):
-
-    def predict(theta):
-        return tf.contrib.sparsemax.sparsemax(theta)
-
-    def Omega(p):
-        return 0.5 * tf.reduce_sum((p ** 2), axis=1) - 0.5
-
-    return fy_loss(y_true, theta, predict, Omega)
+    return fy_loss(y_true, theta, sparsemax_predict, sparsemax_Omega)
