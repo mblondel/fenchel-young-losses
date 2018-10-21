@@ -22,7 +22,7 @@ def test_logistic_against_sklearn():
         clf = FYClassifier(loss="logistic", fit_intercept=False, alpha=0.1)
         clf.fit(X, y_)
         clf2 = LogisticRegression(fit_intercept=False, multi_class="multinomial",
-                                  solver="lbfgs", C=1./clf.alpha)
+                                  solver="lbfgs", C=1./(clf.alpha * X.shape[0]))
         clf2.fit(X, y)
         assert_array_almost_equal(clf.coef_, clf2.coef_, 4)
 
@@ -32,7 +32,7 @@ def test_logistic_ova_against_sklearn():
         clf = FYClassifier(loss="logistic-ova", fit_intercept=False, alpha=0.1)
         clf.fit(X, y_)
         clf2 = LogisticRegression(fit_intercept=False, multi_class="ovr",
-                                  solver="lbfgs", C=1./clf.alpha)
+                                  solver="lbfgs", C=1./(clf.alpha * X.shape[0]))
         clf2.fit(X, y)
         assert_array_almost_equal(clf.coef_, clf2.coef_, 4)
 

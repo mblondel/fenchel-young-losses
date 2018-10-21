@@ -13,14 +13,13 @@ https://arxiv.org/abs/1805.09717
 import tensorflow as tf
 
 
-def fy_loss(y_true, theta, predict, Omega):
+def fy_loss(y_true, theta, predict, Omega, weights):
     @tf.custom_gradient
     def Omega_conjugate(theta):
         y_pred = predict(theta)
 
         def grad(g):
-            # We ignore g since the loss should be the last layer and so g=1.
-            return y_pred
+            return y_pred * tf.reshape(g, (-1, 1))
 
         return tf.reduce_sum(theta * y_pred, axis=1) - Omega(y_pred), grad
 
@@ -49,7 +48,10 @@ def fy_loss(y_true, theta, predict, Omega):
         ret += Omega(y_true)
         ret -= tf.reduce_sum(y_true * theta, axis=1)
 
-    return tf.reduce_sum(ret)
+    if weights == "average":
+        return tf.reduce_mean(ret)
+    else:
+        return tf.reduce_sum(ret)
 
 
 def squared_predict(theta):
@@ -60,8 +62,8 @@ def squared_Omega(mu):
     return 0.5 * tf.reduce_sum(tf.square(mu), axis=1)
 
 
-def squared_loss(y_true, theta):
-    return fy_loss(y_true, theta, squared_predict, squared_Omega)
+def squared_loss(y_true, theta, weights="average"):
+    return fy_loss(y_true, theta, squared_predict, squared_Omega, weights)
 
 
 def Shannon_negentropy(p, axis):
@@ -77,8 +79,8 @@ def logistic_Omega(p):
     return Shannon_negentropy(p, axis=1)
 
 
-def logistic_loss(y_true, theta):
-    return fy_loss(y_true, theta, logistic_predict, logistic_Omega)
+def logistic_loss(y_true, theta, weights="average"):
+    return fy_loss(y_true, theta, logistic_predict, logistic_Omega, weights)
 
 
 def logistic_ova_predict(theta):
@@ -88,8 +90,9 @@ def logistic_ova_Omega(p):
     return Shannon_negentropy(p, axis=1) + Shannon_negentropy(1-p, axis=1)
 
 
-def logistic_ova_loss(y_true, theta):
-    return fy_loss(y_true, theta, logistic_ova_predict, logistic_ova_Omega)
+def logistic_ova_loss(y_true, theta, weights="average"):
+    return fy_loss(y_true, theta, logistic_ova_predict, logistic_ova_Omega,
+                   weights)
 
 
 def sparsemax_predict(theta):
@@ -100,5 +103,5 @@ def sparsemax_Omega(p):
     return 0.5 * tf.reduce_sum((p ** 2), axis=1) - 0.5
 
 
-def sparsemax_loss(y_true, theta):
-    return fy_loss(y_true, theta, sparsemax_predict, sparsemax_Omega)
+def sparsemax_loss(y_true, theta, weights="average"):
+    return fy_loss(y_true, theta, sparsemax_predict, sparsemax_Omega, weights)

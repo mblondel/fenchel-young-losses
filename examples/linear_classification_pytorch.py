@@ -15,8 +15,8 @@ from fyl_pytorch import Logistic_OVA_Loss
 from fyl_pytorch import SparsemaxLoss
 
 # Hyper-parameters
-num_epochs = 100
-learning_rate = 0.001
+num_epochs = 200
+learning_rate = 0.01
 
 # Toy dataset: we create 40 separable points.
 np.random.seed(0)

@@ -20,6 +20,9 @@ def conjugate_function(theta, grad, Omega):
 
 class FYLoss(object):
 
+    def __init__(self, weights="average"):
+        self.weights = weights
+
     def forward(self, y_true, theta):
         y_true = np.array(y_true)
 
@@ -43,7 +46,10 @@ class FYLoss(object):
         else:
             raise ValueError("Invalid shape for y_true.")
 
-        return np.sum(ret)
+        if self.weights == "average":
+            return np.mean(ret)
+        else:
+            return np.sum(ret)
 
 
     def __call__(self, y_true, theta):
@@ -170,12 +176,13 @@ def _bisection(theta, omega_p, omega_p_inv, max_iter=20, tol=1e-3):
 
 class TsallisLoss(FYLoss):
 
-    def __init__(self, alpha=1.5, max_iter=20, tol=1e-3):
+    def __init__(self, alpha=1.5, max_iter=20, tol=1e-3, weights="average"):
         if alpha < 1:
             raise ValueError("alpha should be greater or equal to 1.")
         self.alpha = alpha
         self.max_iter = max_iter
         self.tol = tol
+        self.weights = weights
 
     def predict(self, theta):
         # Faster algorithms for specific cases.

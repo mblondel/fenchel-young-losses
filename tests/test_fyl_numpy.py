@@ -24,7 +24,7 @@ def test_squared_loss():
     y_pred = np.array([[0.7], [3.76], [1.09]])
     loss = SquaredLoss()
     got = loss(y_true, y_pred)
-    expected = 0.5 * np.sum((y_true - y_pred) ** 2)
+    expected = 0.5 * np.mean((y_true - y_pred) ** 2)
     assert_almost_equal(got, expected, 3)
 
     assert_raises(ValueError, loss.forward, y_true.ravel(), y_pred)

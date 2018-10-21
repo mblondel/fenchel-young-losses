@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 from fyl_tensorflow import squared_loss
 
 
+tf.set_random_seed(0)
+
 # Hyper-parameters
 num_epochs = 60
 learning_rate = 0.001
@@ -37,7 +39,6 @@ optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
 #optimizer = "SGD"
 
 model.compile(optimizer=optimizer,
-              #loss='mean_squared_error',
               loss=squared_loss,
               lr=learning_rate)
 

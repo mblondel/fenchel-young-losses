@@ -29,6 +29,10 @@ class ConjugateFunction(torch.autograd.Function):
 
 class FYLoss(torch.nn.Module):
 
+    def __init__(self, weights="average"):
+        self.weights = weights
+        super(FYLoss, self).__init__()
+
     def forward(self, theta, y_true):
         self.y_pred = self.predict(theta)
         ret = ConjugateFunction.apply(theta, self.y_pred, self.Omega)
@@ -50,7 +54,10 @@ class FYLoss(torch.nn.Module):
         else:
             raise ValueError("Invalid shape for y_true.")
 
-        return torch.sum(ret)
+        if self.weights == "average":
+            return torch.mean(ret)
+        else:
+            return torch.sum(ret)
 
 
 class SquaredLoss(FYLoss):

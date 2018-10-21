@@ -78,6 +78,7 @@ class FYClassifier(BaseEstimator, ClassifierMixin):
             # n_classes x n_features
             grad = safe_sparse_dot(loss_func.y_pred.T, X)
             grad -= safe_sparse_dot(Y.T, X)
+            grad /= n_samples
 
             # Regularization term
             loss += 0.5 * self.alpha * np.sum(coef ** 2)
