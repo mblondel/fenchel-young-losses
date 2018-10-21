@@ -17,7 +17,6 @@ from scipy.optimize import fmin_l_bfgs_b
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.utils.extmath import safe_sparse_dot
 from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import LabelBinarizer
 from sklearn.preprocessing import add_dummy_feature
 
 from fyl_numpy import LogisticLoss
@@ -56,15 +55,17 @@ class FYClassifier(BaseEstimator, ClassifierMixin):
 
     def _solve_lbfgs(self, X, y):
         n_samples, n_features = X.shape
+        all_rows = np.arange(n_samples)
         if len(y.shape) == 1:
             # FIXME: avoid binarizing y.
-            Y = LabelBinarizer().fit_transform(y)
+            n_classes = self.label_encoder_.classes_.shape[0]
+            Y = np.zeros((n_samples, n_classes))
+            Y[all_rows, y] = 1
         else:
             Y = y
-        n_classes = Y.shape[1]
+            n_classes = Y.shape[1]
 
         loss_func = self._get_loss()
-        all_rows = np.arange(n_samples)
 
         def _func(coef):
             coef = coef.reshape(n_classes, n_features)
