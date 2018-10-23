@@ -5,6 +5,10 @@ Fenchel-Young losses
 
 NumPy, PyTorch, Tensorflow and scikit-learn compatible implementations of Fenchel-Young losses [1,2].
 
+.. image:: examples/tsallis.png
+   :alt: Tsallis losses
+   :align: center
+
 Supported losses
 ------------------
 
