@@ -9,13 +9,15 @@ NumPy, PyTorch, Tensorflow and scikit-learn compatible implementations of Fenche
    :alt: Tsallis losses
    :align: center
 
-Supported losses
-------------------
+Supported Fenchel-Young losses
+-------------------------------
 
 * Multinomial logistic loss 
 * One-vs-all logistic loss
-* Sparsemax loss
-* Tsallis losses
+* Sparsemax loss (**sparse** predict_proba!)
+* Tsallis losses (**sparse** predict_proba!)
+
+Tsallis losses are a family of losses parametrized by a positive real value α. They recover the multinomial logistic loss with α=1 and the sparsemax loss with α=2. Values of α between 1 and 2 enable to interpolate between the two losses.
 
 Example
 --------
