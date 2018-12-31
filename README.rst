@@ -1,26 +1,36 @@
 .. -*- mode: rst -*-
 
 Fenchel-Young losses
-====================
+=====================
 
-NumPy, PyTorch, Tensorflow and scikit-learn compatible implementations of Fenchel-Young losses [1,2].
+This package implements loss functions useful for **probabilistic classification**. More specifically, it provides
+
+* drop-in replacements for PyTorch loss functions
+* drop-in replacements for TensorFlow loss functions
+* scikit-learn compatible classifiers
+
+The package is based on the **Fenchel-Young loss** framework [1,2].
 
 .. image:: examples/tsallis.png
    :alt: Tsallis losses
    :align: center
 
 Supported Fenchel-Young losses
--------------------------------
+------------------------------
 
 * Multinomial logistic loss 
 * One-vs-all logistic loss
-* Sparsemax loss (**sparse** predict_proba!)
-* Tsallis losses (**sparse** predict_proba!)
+* Sparsemax loss (**sparse** probabilities!)
+* Tsallis losses (**sparse** probabilities!)
+
+Sparse means that some classes have exactly zero probability, i.e., these classes are irrelevant.
 
 Tsallis losses are a family of losses parametrized by a positive real value α. They recover the multinomial logistic loss with α=1 and the sparsemax loss with α=2. Values of α between 1 and 2 enable to interpolate between the two losses.
 
-Example
---------
+In all losses above, the ground-truth can either be a n_samples 1d-array of **label integers** (each label should be between 0 and n_classes-1) or a n_samples x n_classes 2d-array of **label proportions** (each row should sum to 1).
+
+Examples
+---------
 
 scikit-learn compatible classifier:
 
