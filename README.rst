@@ -15,10 +15,12 @@ The package is based on the **Fenchel-Young loss** framework [1,2].
    :alt: Tsallis losses
    :align: center
 
+Notice from the center plot that sparsemax and Tsallis are able to produce **exactly zero** (sparse) probabilities unlike the logistic (softmax) loss.
+
 Supported Fenchel-Young losses
 ------------------------------
 
-* Multinomial logistic loss 
+* Multinomial logistic loss
 * One-vs-all logistic loss
 * Sparsemax loss (**sparse** probabilities!)
 * Tsallis losses (**sparse** probabilities!)
@@ -45,7 +47,7 @@ scikit-learn compatible classifier:
   clf = FYClassifier(loss="sparsemax")
   clf.fit(X, y)
   print(clf.predict_proba(X[:3]))
-  
+
 Drop-in replacement for PyTorch losses:
 
 .. code-block:: python
@@ -102,7 +104,7 @@ References
 
 .. [1] *SparseMAP: Differentiable Sparse Structured Inference.*
         Vlad Niculae, André F. T. Martins, Mathieu Blondel, Claire Cardie.
-        In Proc. of ICML 2018. 
+        In Proc. of ICML 2018.
         [`arXiv <https://arxiv.org/abs/1802.04223>`_]
 
 
