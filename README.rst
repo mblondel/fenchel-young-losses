@@ -110,6 +110,7 @@ References
 
 .. [2] *Learning Classifiers with Fenchel-Young Losses: Generalized Entropies, Margins, and Algorithms.*
         Mathieu Blondel, André F. T. Martins, Vlad Niculae.
+        In Proc. of AISTATS 2019.
         [`arXiv <https://arxiv.org/abs/1805.09717>`_]
 
 Author
