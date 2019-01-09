@@ -9,7 +9,7 @@ This package implements loss functions useful for **probabilistic classification
 * drop-in replacements for TensorFlow loss functions
 * scikit-learn compatible classifiers
 
-The package is based on the **Fenchel-Young loss** framework [1,2].
+The package is based on the **Fenchel-Young loss** framework [1,2,3].
 
 .. image:: examples/tsallis.png
    :alt: Tsallis losses
@@ -107,12 +107,16 @@ References
         In Proc. of ICML 2018.
         [`arXiv <https://arxiv.org/abs/1802.04223>`_]
 
-
 .. [2] *Learning Classifiers with Fenchel-Young Losses: Generalized Entropies, Margins, and Algorithms.*
         Mathieu Blondel, André F. T. Martins, Vlad Niculae.
         In Proc. of AISTATS 2019.
         [`arXiv <https://arxiv.org/abs/1805.09717>`_]
-
+        
+.. [3] *Learning with Fenchel-Young Losses.*
+        Mathieu Blondel, André F. T. Martins, Vlad Niculae.
+        Preprint.
+        [`arXiv <https://arxiv.org/abs/1901.02324>`_]
+        
 Author
 ------
 
