@@ -9,12 +9,9 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 from fyl_tensorflow import squared_loss
 
-
-tf.set_random_seed(0)
-
+tf.random.set_seed(0)
 # Hyper-parameters
 num_epochs = 60
 learning_rate = 0.001
@@ -35,15 +32,15 @@ model = tf.keras.models.Sequential([
                           activation="linear"),
 ])
 
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
-#optimizer = "SGD"
+optimizer = tf.optimizers.SGD(learning_rate=learning_rate)
+# optimizer = "SGD"
 
 model.compile(optimizer=optimizer,
               loss=squared_loss,
-              lr=learning_rate)
+              metrics='mae')
 
 model.fit(X, y, epochs=num_epochs)
-#model.evaluate(X, y)
+# model.evaluate(X, y)
 
 # Plot the graph
 y_pred = model.predict(X)
