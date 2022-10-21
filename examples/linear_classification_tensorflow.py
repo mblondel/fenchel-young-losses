@@ -5,9 +5,8 @@ import os, sys
 currentdir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.dirname(currentdir))
 
-import numpy as np
 import tensorflow as tf
-tf.enable_eager_execution()
+import numpy as np
 import matplotlib.pyplot as plt
 
 from fyl_tensorflow import logistic_loss
@@ -40,10 +39,10 @@ y = np.array([0] * 20 + [1] * 20, dtype=np.long)
 Y = None
 
 # Can also use a one-hot encoded matrix.
-#Y = np.zeros((X.shape[0], 2))
-#Y[np.arange(X.shape[0]), y] = 1
+Y = np.zeros((X.shape[0], 2))
+Y[np.arange(X.shape[0]), y] = 1
 
-tf.set_random_seed(0)
+tf.random.set_seed(0)
 
 model = tf.keras.models.Sequential([
     tf.keras.layers.Dense(units=2,
@@ -51,12 +50,12 @@ model = tf.keras.models.Sequential([
                           activation="linear"),
 ])
 
-optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate)
+optimizer = tf.optimizers.SGD(learning_rate=learning_rate)
 #optimizer = "SGD"
 
 model.compile(optimizer=optimizer,
               loss=loss,
-              lr=learning_rate)
+              metrics='accuracy')
 
 if Y is None:
     model.fit(X, y, epochs=num_epochs)

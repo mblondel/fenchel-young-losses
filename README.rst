@@ -96,6 +96,7 @@ Drop-in replacement for tensorflow losses:
 Installation
 ------------
 
+The TensorFlow implementation requires the installation of TensorFlow-addons (<https://github.com/tensorflow/addons>)
 Simply copy relevant files to your project.
 
 

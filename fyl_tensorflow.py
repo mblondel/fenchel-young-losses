@@ -1,9 +1,10 @@
 # Author: Mathieu Blondel
+#         Okba Bekhelifi
 # License: Simplified BSD
 
 """
 Tensorflow implementation of
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
 Learning Classifiers with Fenchel-Young Losses:
     Generalized Entropies, Margins, and Algorithms.
 Mathieu Blondel, André F. T. Martins, Vlad Niculae.
@@ -11,6 +12,7 @@ https://arxiv.org/abs/1805.09717
 """
 
 import tensorflow as tf
+import tensorflow_addons as tfa
 
 
 def fy_loss(y_true, theta, predict, Omega, weights):
@@ -67,13 +69,14 @@ def squared_loss(y_true, theta, weights="average"):
 
 
 def Shannon_negentropy(p, axis):
-    tmp = p * tf.log(p)
-    tmp = tf.where(tf.is_nan(tmp), tf.zeros_like(tmp), tmp)
+    tmp = p * tf.math.log(p)
+    tmp = tf.where(tf.math.is_nan(tmp), tf.zeros_like(tmp), tmp)
     return tf.reduce_sum(tmp, axis)
 
 
 def logistic_predict(theta):
     return tf.nn.softmax(theta, axis=1)
+
 
 def logistic_Omega(p):
     return Shannon_negentropy(p, axis=1)
@@ -86,6 +89,7 @@ def logistic_loss(y_true, theta, weights="average"):
 def logistic_ova_predict(theta):
     return tf.nn.sigmoid(theta)
 
+
 def logistic_ova_Omega(p):
     return Shannon_negentropy(p, axis=1) + Shannon_negentropy(1-p, axis=1)
 
@@ -96,7 +100,7 @@ def logistic_ova_loss(y_true, theta, weights="average"):
 
 
 def sparsemax_predict(theta):
-    return tf.contrib.sparsemax.sparsemax(theta)
+    return tfa.activations.sparsemax(theta)
 
 
 def sparsemax_Omega(p):
